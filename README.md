@@ -67,3 +67,30 @@ It is designed to be **easy to understand**, even for users without a finance ba
 2. Save the file as:
    ```text
    planner.m
+
+## References used:
+
+### Personal Finance Benchmarks
+1. 50-30-20 Rule
+Source: Elizabeth Warren & Amelia Warren Tyagi
+Book: All Your Worth
+2. Housing Cost Ratio
+Source: US Consumer Financial Protection Bureau (CFPB)
+Housing ≤ 30–35% of income
+3. Emergency Fund Rule
+Source: Investopedia, CFP Board
+3–6 months of expenses
+4. Savings Rate
+Source: OECD household finance studies
+15–25% for long-term financial health
+
+### Commercial Finance Benchmarks
+1. Operating Margin Structure
+Source: McKinsey industry benchmarks
+OPEX typically 20–40% of revenue (varies by industry)
+2. R&D Spend
+Source: PwC Global Innovation Survey
+3–10% depending on sector
+3. Marketing Spend
+Source: Gartner CMO Spend Survey
+5–15% of revenue
