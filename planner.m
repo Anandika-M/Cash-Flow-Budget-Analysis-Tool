@@ -1,193 +1,277 @@
-disp("--------------------------------------- MONTHLY BUDGET PLANNER AND CALCULATOR ------------------------------------------------");
-fprintf('1. Budget planner \n2. Budget calculator\n3. Savings investment Analyser \n 4.Commercial budget planner');
-option=input("\nEnter your choice :" );
-switch option
-   case 1
-disp("*************************************** BUDGET PLANNER ***********************************************");
-% case for personal budget
-amount=input("ENTER YOUR SALARY :");
-fprintf("The estimated budget is based on the following :");
-disp("1. 50% of income for expenses and needs.");
-disp("2. 25%-30% of income for wants.");
-disp("3. 15%-20% of income for savings.");
-%expense_categories
-% Entertainment and leisure 5%-10%
-% Personal and insurance =10%-25%
-% Savings=15%-20%
-% grocery=7%-10%
-% Medical Expenses and health=10-15%
-% Loan and housing=25%-35%
-% transportation=3%
-% Education=5%-10%
-% Clothing=5%
-% Tax=5%-10%
-if amount>=0
-entertainment=0.05*amount;
-insurance=0.10*amount;
-savings=0.15*amount;
-medical=0.10*amount;
-housing=0.25*amount;
-clothing=0.05*amount;
-tax=0.05*amount;
-transportation=0.03*amount;
-grocery=0.07*amount;
-education=0.05*amount;
-electricity=0.01*amount;
-total=tax+housing+insurance+medical+clothing+entertainment+savings+grocery+education+transportation;
-miscellaneous=amount-total;
+clc;
+clear;
+
+disp("==============================================================");
+disp("     CASH FLOW & BUDGET ANALYSIS TOOL (PERSONAL + CORPORATE)");
+disp("==============================================================");
+
+disp("Select Budget Type:");
+disp("1. Personal Budget Analysis");
+disp("2. Corporate Budget Analysis");
+mode = input("Enter choice: ");
+
+%% ================= PERSONAL BUDGET ==========================
+if mode == 1
+
+    income = input("Enter monthly income (₹): ");
+
+    disp("Income Stability:");
+    disp("1. Fixed");
+    disp("2. Variable");
+    stability = input("Choice: ");
+
+    disp("Risk Preference:");
+    disp("1. Conservative");
+    disp("2. Moderate");
+    disp("3. Aggressive");
+    risk = input("Choice: ");
+
+    disp("Enter monthly expenses (₹)");
+    housing = input("Housing / Rent / EMI: ");
+    insurance = input("Insurance: ");
+    utilities = input("Utilities: ");
+    grocery = input("Grocery: ");
+    medical = input("Medical: ");
+    transport = input("Transport: ");
+    lifestyle = input("Lifestyle / Entertainment: ");
+    savings = input("Savings / Investments: ");
+
+    % Classification
+    fixed = housing + insurance + utilities;
+    variable = grocery + medical + transport;
+    discretionary = lifestyle;
+
+    % Percentages
+    p_fixed = fixed / income * 100;
+    p_variable = variable / income * 100;
+    p_discretionary = discretionary / income * 100;
+    p_savings = savings / income * 100;
+
+    % Benchmarks (Research-backed)
+    bench_fixed = [30 40];
+    bench_variable = [15 25];
+    bench_discretionary = [10 20];
+    bench_savings = [15 25];
+
+    if stability == 2
+        bench_savings = [20 30];
+        bench_fixed = [25 35];
+    end
+
+    if risk == 1
+        bench_savings = bench_savings + 5;
+    elseif risk == 3
+        bench_discretionary = bench_discretionary + 5;
+    end
+
+    disp(" ");
+    disp("------------ PERSONAL CASH FLOW SUMMARY ------------");
+
+    fprintf("Fixed Costs: %.2f%% (Rec: %d–%d%%)\n", p_fixed, bench_fixed);
+    fprintf("Variable Costs: %.2f%% (Rec: %d–%d%%)\n", p_variable, bench_variable);
+    fprintf("Discretionary: %.2f%% (Rec: %d–%d%%)\n", p_discretionary, bench_discretionary);
+    fprintf("Savings Rate: %.2f%% (Rec: %d–%d%%)\n", p_savings, bench_savings);
+
+    disp(" ");
+    disp("Key Observations:");
+    if p_fixed > bench_fixed(2)
+        disp("⚠ High fixed cost exposure");
+    end
+    if p_savings < bench_savings(1)
+        disp("⚠ Savings below recommended level");
+    end
+    if p_fixed <= bench_fixed(2) && p_savings >= bench_savings(1)
+        disp("✔ Healthy personal cash-flow structure");
+    end
+
+    disp(" ");
+    disp("--------------- INSIGHTS & SUGGESTIONS (PERSONAL) ---------------");
+    
+    % Fixed cost insight
+    if p_fixed > bench_fixed(2)
+        disp("Insight: High fixed costs reduce financial flexibility.");
+        disp("Suggestion: Consider renegotiating rent/EMI or reducing long-term commitments.");
+    elseif p_fixed < bench_fixed(1)
+        disp("Insight: Fixed costs are well controlled.");
+    end
+    
+    % Savings insight
+    if p_savings < bench_savings(1)
+        disp("Insight: Savings rate is below recommended level.");
+        disp("Suggestion: Increase savings gradually by 2–5% of income or reduce discretionary spending.");
+    elseif p_savings >= bench_savings(1) && p_savings <= bench_savings(2)
+        disp("Insight: Savings rate is within a healthy range.");
+    else
+        disp("Insight: High savings rate provides strong financial resilience.");
+        disp("Suggestion: Consider allocating part of savings to higher-return investments if risk appetite allows.");
+    end
+    
+    % Discretionary insight
+    if p_discretionary > bench_discretionary(2)
+        disp("Insight: Discretionary spending is relatively high.");
+        disp("Suggestion: Track lifestyle expenses and cap non-essential spending.");
+    end
+    
+    % Overall assessment
+    if p_fixed <= bench_fixed(2) && p_savings >= bench_savings(1)
+        disp("Overall Assessment: Personal cash-flow structure is financially sound.");
+    else
+        disp("Overall Assessment: Cash-flow structure can be improved to reduce risk exposure.");
+    end
+
+
+    % Charts
+    figure;
+    pie([fixed variable discretionary savings], ...
+        {'Fixed','Variable','Discretionary','Savings'});
+    title("Personal Expense Composition");
+
+    figure;
+    bar([p_fixed p_variable p_discretionary p_savings]);
+    hold on;
+    errorbar(1:4, ...
+        mean([bench_fixed; bench_variable; bench_discretionary; bench_savings],2), ...
+        diff([bench_fixed; bench_variable; bench_discretionary; bench_savings],1,2)/2, ...
+        'k.');
+    hold off;
+    xticklabels({'Fixed','Variable','Discretionary','Savings'});
+    ylabel("% of Income");
+    title("Actual vs Recommended Spending (Personal)");
+
+    figure;
+    bar([fixed variable discretionary savings]);
+    xticklabels({'Fixed','Variable','Discretionary','Savings'});
+    ylabel("Amount (₹)");
+    title("Personal Cost Structure");
+
+%% ================= CORPORATE BUDGET =========================
+elseif mode == 2
+
+    revenue = input("Enter annual company revenue (₹): ");
+
+    disp("Select Business Stage:");
+    disp("1. Stable");
+    disp("2. Growth-focused");
+    stage = input("Choice: ");
+
+    disp("Enter annual expenses (₹)");
+    operations = input("Operations: ");
+    hr = input("Human Resources: ");
+    admin = input("Administrative Overheads: ");
+    marketing = input("Marketing: ");
+    rnd = input("Research & Development: ");
+    reserves = input("Cash Reserves / Retained Earnings: ");
+
+    fixed_opex = hr + admin;
+    variable_opex = operations;
+    growth = marketing + rnd;
+
+    p_fixed = fixed_opex / revenue * 100;
+    p_variable = variable_opex / revenue * 100;
+    p_growth = growth / revenue * 100;
+    p_reserves = reserves / revenue * 100;
+
+    % Benchmarks (McKinsey / PwC / Gartner ranges)
+    bench_fixed = [15 25];
+    bench_variable = [20 40];
+    bench_growth = [10 25];
+    bench_reserves = [5 15];
+
+    if stage == 2
+        bench_growth = [15 35];
+        bench_reserves = [5 10];
+    end
+
+    disp(" ");
+    disp("------------ CORPORATE COST STRUCTURE SUMMARY ------------");
+
+    fprintf("Fixed OPEX: %.2f%% (Rec: %d–%d%%)\n", p_fixed, bench_fixed);
+    fprintf("Variable OPEX: %.2f%% (Rec: %d–%d%%)\n", p_variable, bench_variable);
+    fprintf("Growth Spend: %.2f%% (Rec: %d–%d%%)\n", p_growth, bench_growth);
+    fprintf("Cash Reserves: %.2f%% (Rec: %d–%d%%)\n", p_reserves, bench_reserves);
+
+    disp(" ");
+    disp("Key Observations:");
+    if p_fixed > bench_fixed(2)
+        disp("⚠ High fixed overheads reduce operating flexibility");
+    end
+    if p_reserves < bench_reserves(1)
+        disp("⚠ Low cash reserves increase liquidity risk");
+    end
+    if p_growth >= bench_growth(1)
+        disp("✔ Growth investment aligned with expansion strategy");
+    end
+
+
+    disp(" ");
+    disp("--------------- INSIGHTS & SUGGESTIONS (CORPORATE) ---------------");
+    
+    % Fixed overhead insight
+    if p_fixed > bench_fixed(2)
+        disp("Insight: High fixed overheads may constrain operational flexibility.");
+        disp("Suggestion: Review administrative and HR costs to improve operating leverage.");
+    elseif p_fixed < bench_fixed(1)
+        disp("Insight: Lean fixed cost structure enhances flexibility.");
+    end
+    
+    % Variable OPEX insight
+    if p_variable > bench_variable(2)
+        disp("Insight: Variable operating costs are relatively high.");
+        disp("Suggestion: Evaluate process efficiency and cost optimization opportunities.");
+    end
+    
+    % Growth spend insight
+    if p_growth < bench_growth(1)
+        disp("Insight: Growth investment is below industry benchmarks.");
+        disp("Suggestion: Consider increasing marketing or R&D spend to support long-term growth.");
+    elseif p_growth > bench_growth(2)
+        disp("Insight: Aggressive growth spending detected.");
+        disp("Suggestion: Ensure returns on growth investments are tracked and justified.");
+    end
+    
+    % Reserves insight
+    if p_reserves < bench_reserves(1)
+        disp("Insight: Low cash reserves increase liquidity risk.");
+        disp("Suggestion: Strengthen retained earnings to improve financial resilience.");
+    elseif p_reserves >= bench_reserves(1)
+        disp("Insight: Adequate cash reserves support business stability.");
+    end
+    
+    % Overall assessment
+    if p_reserves >= bench_reserves(1) && p_fixed <= bench_fixed(2)
+        disp("Overall Assessment: Corporate cost structure appears balanced and resilient.");
+    else
+        disp("Overall Assessment: Cost structure adjustments recommended to reduce financial risk.");
+    end
+
+
+    % Charts
+    figure;
+    pie([fixed_opex variable_opex growth reserves], ...
+        {'Fixed OPEX','Variable OPEX','Growth Spend','Reserves'});
+    title("Corporate Cost Composition");
+
+    figure;
+    bar([p_fixed p_variable p_growth p_reserves]);
+    hold on;
+    errorbar(1:4, ...
+        mean([bench_fixed; bench_variable; bench_growth; bench_reserves],2), ...
+        diff([bench_fixed; bench_variable; bench_growth; bench_reserves],1,2)/2, ...
+        'k.');
+    hold off;
+    xticklabels({'Fixed','Variable','Growth','Reserves'});
+    ylabel("% of Revenue");
+    title("Actual vs Recommended Cost Structure (Corporate)");
+
+    figure;
+    bar([fixed_opex variable_opex growth reserves]);
+    xticklabels({'Fixed OPEX','Variable OPEX','Growth','Reserves'});
+    ylabel("Amount (₹)");
+    title("Corporate Cost Structure Breakdown");
+
 else
-disp("PLEASE ENTER A NUMBER GREATER THAN 0 !");
+    disp("Invalid selection");
 end
-disp("--------------------------------------------------------------------------------------------------");
-disp(" 					EXPENSES				                                                        " )
-disp("---------------------------------------------------------------------------------------------------");
-fprintf("Entertainment and Leisure :₹ %0.2f\n",entertainment);
-fprintf("Insurance and Personal expenses : ₹ %0.2f\n",insurance);
-fprintf("Medical expenses and health : ₹ %0.2f\n",medical);
-fprintf("Loan and housing :₹%0.2f\n",housing);
-fprintf("Clothing :₹%0.2f\n",clothing);
-fprintf("Taxes :₹%0.2f\n",tax);
-fprintf("Transportation expenses :₹%0.2f\n",transportation);
-fprintf("Grocery :₹%0.2f\n",grocery);
-fprintf("Education expenses :₹%0.2f\n",education);
-fprintf("The remaining amount(Miscellaneous) :₹%0.2f\n",miscellaneous);
-fprintf("Total Expenses :₹%0.2f\n",total);
-fprintf("Savings :₹%0.2f\n",savings);
-categories ={'entertainment','insurance','medical','housing','clothing','tax','transportation','grocery','education','miscellaneous','savings'};
-values =[entertainment,insurance,medical,housing,clothing,tax,transportation,grocery,education,miscellaneous,savings];
-% Create the pie chart
-figure;
-set(gcf, 'Position', [100, 100, 1200, 500]);
 
-pie(values, categories);
-title("Monthly Budget Breakdown");
-
-
-bar(values);
-xticklabels(categories);
-xtickangle(90); 
-title("Monthly Expenses and Savings Bar Graph");
-xlabel("Categories");
-ylabel("Amount (₹)");
-        
-
-case 2
-% Prompt the user to enter monthly salary
-disp("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- BUDGET CALCULATOR -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-")
-disp("Consider giving the value in rupees(INR)")
-monthlySalary = input("\n\nEnter your monthly salary :");
-	
-disp("------------------------------------------------------------------------")
-
-entertainment = input("Enter entertainment expenses :");
-tax = input("Enter tax expenses : ");
-loan = input("Enter loan expenses : ");
-education = input("Enter education expenses : ");
-medical = input("Enter medical expenses : ");
-grocery = input("Enter grocery expenses : ");
-transportation=input("Enter transportation expenses :");
-electricity = input("Enter electricity expense : ");
-
-% Calculate savings
-totalExpenses = [entertainment, tax, loan, education, medical, grocery,electricity,transportation];
-savings = monthlySalary - sum(totalExpenses);
-
-disp("--------------------------------------------------------------------------");
-disp( "                        EXPENSES                                 ")
-disp("--------------------------------------------------------------------------");
-fprintf("Entertainment expenses:₹%0.2f\n",entertainment);
-fprintf("Insurance expenses :₹%0.2f\n",insurance);
-fprintf("Medical expenses :₹%0.2f\n",medical);
-fprintf("Loan :₹%0.2f\n",housing);
-fprintf("Taxes :₹%0.2f\n",tax);
-fprintf("Transportation expenses:₹%0.2fn",transportation);
-fprintf("Grocery :₹%0.2f\n",grocery);
-fprintf("Education expenses :₹%0.2f",education);
-categories = {'entertainment', 'tax', 'loan', 'education', 'medical', 'grocery', 'electricity', 'savings', 'transportation'};
-values = [entertainment, tax, loan, education, medical, grocery, electricity,savings,transportation];
-% Create the pie chart
-figure;
-set(gcf, 'Position', [100, 100, 1200, 500]);
-
-pie(values, categories);
-title("Monthly Budget Breakdown");
-
-% Create a bar graph to visualize expenses and savings
-
-bar([totalExpenses, savings]);
-xticklabels(categories);
-xtickangle(90); % Rotate x-axis labels
-title("Monthly Expenses and Savings Bar Graph");
-xlabel("Categories");
-ylabel("Amount (₹)");
-
-% Display savings amount
-fprintf("\nMonthly Savings : ₹ %.2f\n", savings);
-case 3
-% Prompt the user for input
-initial = input("Enter your initial savings amount (in rupees):");
-Contribution = input("Enter your monthly contribution (in rupees):");
-rate = input("Enter the annual interest rate (%):");
-future=input("Enter the target amount to save :");
-% Define the time period in months
-time = input("Enter the time period in months:");
-
-% compound interest
-final = initial;
-for i = 1:time
-final = final + Contribution;
-final = final* (1 + rate / 12 / 100);
-save(i)=final;
-end
-fprintf("Your savings will grow to ₹%.2f after %d months.\n", final, time);
-
-if save >= future %minimum
-fprintf("\nYou are on track to meet your savings goal.\n");
-else
-fprintf("\nConsider increasing your monthly contributions or seeking higher returns.\n");
-end
- case 4
-        % Comercial Budget planner
-        disp("--------------------------------- Commercial Budget Planner---------------------------------------");
-revenue=input("Enter the revenue of the company :");
-fprintf("\n\nThe calculation is based on the following analysis\n\n");
-% Define your budget categories and initial budget amounts
-disp("Marketing: 5% - 12% of revenue");
-disp("Sales: 10% - 20% of revenue");
-disp("Operations: 20% - 40% of revenue")
-disp("Research and Development: 3% - 10% of revenue");
-disp("Human Resources: 10% - 35% of revenue")
-disp("Miscellaneous: 5% - 10% of revenue")
-marketing=0.05*revenue;
-sales=0.12*revenue;
-operations=0.25*revenue;
-research=0.05*revenue;
-resource=0.10*revenue;
-miscellaneous=0.06*revenue;
-categories = {'Marketing', 'Sales', 'Operations', 'Research and Development', 'Human Resources', 'Miscellaneous'};
-budgetAmounts = [marketing, sales, operations, research, resource, miscellaneous]; % Example budget amounts for each category
-% Display the initial budget amounts
-disp("---------------------------------------------------------------------------");
-disp('                     Initial Budget Amounts                               ');
-disp("---------------------------------------------------------------------------");
-fprintf("\nMarketing expenses :%0.2f",marketing);
-fprintf("\nSales expenses :%0.2f",sales);
-fprintf("\nOperational expenses :%0.2f",operations);
-fprintf("\nResearch and Developmental expenses :%0.2f ",research);
-fprintf("\nHuman resource expenses : %0.2f",resource);
-fprintf("\nMiscellaneous  :%0.2f",miscellaneous);
-saving= revenue- sum(budgetAmounts);
-fprintf("\n\nThe Total Amount saved  : %0.2f",saving)
-% Create a bar plot to visualize the budget amounts and expenses
-figure;
-bar(1:length(categories), budgetAmounts, 0.5);
-xticks(1:length(categories));
-xticklabels(categories);
-xlabel('Categories');
-ylabel('Amount (in ₹)');
-title('Commercial Budget Planner');
-legend('Budget Amount');
-grid on;
-otherwise
-disp("Sorry ! INVALID CHOICE")
-end
+disp(" ");
+disp("Analysis complete. Use insights to improve financial resilience and decision-making.");
