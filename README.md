@@ -66,4 +66,4 @@ It is designed to be **easy to understand**, even for users without a finance ba
 1. Open MATLAB
 2. Save the file as:
    ```text
-   cash_flow_budget_analysis.m
+   planner.m
